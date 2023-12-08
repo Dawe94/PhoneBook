@@ -31,7 +31,7 @@
                   <Pane id="contactPane" fx:id="contactPane" prefHeight="612.0" prefWidth="458.0" />
                   <Pane id="exportPane" fx:id="exportPane" layoutX="6.0" prefHeight="612.0" prefWidth="458.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TableView id="table" fx:id="table" prefHeight="455.0" prefWidth="458.0">
+                        <TableView id="table" fx:id="table" editable="true" prefHeight="455.0" prefWidth="458.0">
                           <placeholder>
                               <Label text="There is no data" />
                           </placeholder>
