@@ -1,3 +1,3 @@
-com\phonebook\App.class
 com\phonebook\PBController.class
+com\phonebook\PhoneBook.class
 module-info.class
