@@ -1,3 +1,4 @@
 com\phonebook\PBController.class
+com\phonebook\Person.class
 com\phonebook\PhoneBook.class
 module-info.class

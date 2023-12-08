@@ -2,11 +2,16 @@ package com.phonebook;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
@@ -31,9 +36,31 @@ public class PBController implements Initializable {
             Pane exportPane;
 //</editor-fold>
     
+    private final ObservableList<Person> data =
+            FXCollections.observableArrayList(
+            new Person("Szabó", "Dávid", "szabod@citromail.com"),
+            new Person("Kovács", "Éva", "kovacs_eva@freemail.hu"),
+            new Person("Juhász", "Gábor", "jgabor1989@gmailmail.com"));
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        TableColumn lastNameCol = new TableColumn("LastName");
+        lastNameCol.setMinWidth(100);
+        lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        lastNameCol.setCellValueFactory(new PropertyValueFactory<Person, String>("lastName"));
         
+        TableColumn firstNameCol = new TableColumn("FirstName");
+        firstNameCol.setMinWidth(100);
+        firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        firstNameCol.setCellValueFactory(new PropertyValueFactory<Person, String>("firstName"));
+        
+        TableColumn emailCol = new TableColumn("EmailAddress");
+        emailCol.setMinWidth(200);
+        emailCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        emailCol.setCellValueFactory(new PropertyValueFactory<Person, String>("email"));
+        
+        table.getColumns().addAll(lastNameCol, firstNameCol, emailCol);
+        table.setItems(data);
     }
 
     
