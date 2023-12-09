@@ -1,5 +1,6 @@
 com\phonebook\PBController.class
-com\phonebook\Person.class
 com\phonebook\PBController$1.class
 com\phonebook\PhoneBook.class
 module-info.class
+com\phonebook\PBController$2.class
+com\phonebook\Person.class
