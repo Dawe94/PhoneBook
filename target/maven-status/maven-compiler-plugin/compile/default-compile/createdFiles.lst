@@ -2,6 +2,7 @@ com\phonebook\PBController.class
 com\phonebook\PdfGeneration.class
 com\phonebook\PBController$1.class
 com\phonebook\PhoneBook.class
+com\phonebook\DB.class
 module-info.class
 com\phonebook\PBController$2.class
 com\phonebook\Person.class

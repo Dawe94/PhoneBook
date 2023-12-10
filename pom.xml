@@ -26,7 +26,11 @@
             <version>5.5.13</version>
             <type>jar</type>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.17.1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

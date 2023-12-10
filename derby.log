@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Sun Dec 10 23:26:42 CET 2023D001 : [0] The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217), [1] a816c00e-018c-55d6-fe84-000006d48bb0, [2] C:\Users\user\Documents\NetBeansProjects\phoneBook\ContactDB, [3] jdk.internal.loader.ClassLoaders$AppClassLoader@433c675d, [4] file:/C:/Users/user/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
+java.vendor=Oracle Corporation
+java.runtime.version=20+36-2344
+user.dir=C:\Users\user\Documents\NetBeansProjects\phoneBook
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+C005 : [0] 

@@ -95,6 +95,7 @@ public class PBController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        DB db = new DB();
         setTableData();
         setMenuData();
     }

@@ -28,20 +28,21 @@ public class PdfGeneration {
             document.add(image);
             
             // Táblázat lefelé tolása
-            document.add(new Paragraph("\n\n\n\n\n\n\n\n\n\n\n"));
+            document.add(new Paragraph("\n\n\n\n\n\n\n\n\n\n\n\n"));
             
             // Táblázat
-            float[] columnsWidth = {3, 3, 4};
+            float[] columnsWidth = {1, 3, 3, 4};
             PdfPTable table = new PdfPTable(columnsWidth);
             table.setWidthPercentage(100);
             PdfPCell cell = new PdfPCell(new Phrase("Contact List"));
             cell.setBackgroundColor(GrayColor.LIGHT_GRAY);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            cell.setColspan(3);
+            cell.setColspan(4);
             table.addCell(cell);
             
             table.getDefaultCell().setBackgroundColor(new GrayColor(0.75f));
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell("Id");
             table.addCell("Last Name");
             table.addCell("First Name");
             table.addCell("Email Address");
@@ -50,7 +51,9 @@ public class PdfGeneration {
             table.getDefaultCell().setBackgroundColor(GrayColor.GRAYWHITE);
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
             
+            int counter = 1;
             for (Person person : data) {
+                table.addCell(String.valueOf(counter++));
                 table.addCell(person.getLastName());
                 table.addCell(person.getFirstName());
                 table.addCell(person.getEmail());
