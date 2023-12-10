@@ -87,6 +87,8 @@ public class PBController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         setTableData();
         setMenuData();
+        PdfGeneration pdf = new PdfGeneration();
+        pdf.pdfGenerator("file name", "content");
     }
     
     //<editor-fold defaultstate="collapsed" desc="setTableData">
