@@ -2,10 +2,13 @@ package com.phonebook;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,21 +35,25 @@ public class PBController implements Initializable {
 
 //<editor-fold defaultstate="collapsed" desc="FXML Objects">
     @FXML
-            TableView table;
+    private TableView table;
     @FXML
-            TextField inputLastName;
+    private TextField inputLastName;
     @FXML
-            TextField inputFirstName;
+    private TextField inputFirstName;
     @FXML
-            TextField inputEmail;
+    private TextField inputEmail;
     @FXML
-            Button addNewContactButton;
+    private Button addNewContactButton;
     @FXML
-            StackPane menuPane;
+    private StackPane menuPane;
     @FXML
-            Pane contactPane;
+    private Pane contactPane;
     @FXML
-            Pane exportPane;
+    private Pane exportPane;
+    @FXML
+    private Button exportButton;
+    @FXML
+    private TextField inputExport;
 //</editor-fold>
     
     // Adatbázis híján egy mesterséges Lista létrehozása
@@ -55,6 +62,26 @@ public class PBController implements Initializable {
             new Person("Szabó", "Dávid", "szabod@citromail.com"),
             new Person("Kovács", "Éva", "kovacs_eva@freemail.hu"),
             new Person("Juhász", "Gábor", "jgabor1989@gmailmail.com"));
+    
+    
+    @FXML
+    public void addContact(ActionEvent event) {
+        String email = inputEmail.getText();
+        if (isEmailAFormatValid(email)) {
+        data.add(new Person(inputLastName.getText(), inputFirstName.getText(), email));
+            inputLastName.clear();
+            inputFirstName.clear();
+            inputEmail.clear();
+        }
+    }
+    
+    private boolean isEmailAFormatValid(String email) {
+	String regex = "^[A-Z[a-z][0-9]]+(?:[\\._][A-Z[a-z][0-9]]+)*@[A-Z[a-z][0-9]]*(?:-[A-Z[a-z][0-9]]+)*"+
+			"\\.[A-Z[a-z][0-9]]+$";
+	Pattern pattern = Pattern.compile(regex);
+	Matcher matcher = pattern.matcher(email);
+	return matcher.find();
+}
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -168,6 +195,14 @@ public class PBController implements Initializable {
                                 treeItemContacts.setExpanded(true);
                             } catch (Exception ex) {
                             }
+                            break;
+                         case MENU_LIST:
+                            contactPane.setVisible(true);
+                            exportPane.setVisible(false);
+                            break;
+                         case MENU_EXPORTS:
+                            contactPane.setVisible(false);
+                            exportPane.setVisible(true);
                             break;
                         case MENU_EXIT:
                             System.exit(0);
