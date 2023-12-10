@@ -27,7 +27,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 public class PBController implements Initializable {
-    
+
     private final String MENU_CONTACTS = "Contacts";
     private final String MENU_EXIT = "Exit";
     private final String MENU_LIST = "List";
@@ -55,42 +55,50 @@ public class PBController implements Initializable {
     @FXML
     private TextField inputExport;
 //</editor-fold>
-    
+
     // Adatbázis híján egy mesterséges Lista létrehozása
-    private final ObservableList<Person> data =
-            FXCollections.observableArrayList(
-            new Person("Szabó", "Dávid", "szabod@citromail.com"),
-            new Person("Kovács", "Éva", "kovacs_eva@freemail.hu"),
-            new Person("Juhász", "Gábor", "jgabor1989@gmailmail.com"));
-    
-    
+    private final ObservableList<Person> data
+            = FXCollections.observableArrayList(
+                    new Person("Szabó", "Dávid", "szabod@citromail.com"),
+                    new Person("Kovács", "Éva", "kovacs_eva@freemail.hu"),
+                    new Person("Juhász", "Gábor", "jgabor1989@gmailmail.com"));
+
     @FXML
     public void addContact(ActionEvent event) {
         String email = inputEmail.getText();
         if (isEmailAFormatValid(email)) {
-        data.add(new Person(inputLastName.getText(), inputFirstName.getText(), email));
+            data.add(new Person(inputLastName.getText(), inputFirstName.getText(), email));
             inputLastName.clear();
             inputFirstName.clear();
             inputEmail.clear();
         }
     }
-    
+
+    @FXML
+    public void exportPdf(ActionEvent event) {
+        String fileName = inputExport.getText();
+        fileName = fileName.replaceAll("\\s+", "");
+        if (fileName != null && !fileName.isEmpty()) {
+            PdfGeneration pdf = new PdfGeneration();
+            pdf.pdfGenerator(fileName, data);
+            inputExport.clear();
+        }
+    }
+
     private boolean isEmailAFormatValid(String email) {
-	String regex = "^[A-Z[a-z][0-9]]+(?:[\\._][A-Z[a-z][0-9]]+)*@[A-Z[a-z][0-9]]*(?:-[A-Z[a-z][0-9]]+)*"+
-			"\\.[A-Z[a-z][0-9]]+$";
-	Pattern pattern = Pattern.compile(regex);
-	Matcher matcher = pattern.matcher(email);
-	return matcher.find();
-}
-    
+        String regex = "^[A-Z[a-z][0-9]]+(?:[\\._][A-Z[a-z][0-9]]+)*@[A-Z[a-z][0-9]]*(?:-[A-Z[a-z][0-9]]+)*"
+                + "\\.[A-Z[a-z][0-9]]+$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.find();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setTableData();
         setMenuData();
-        PdfGeneration pdf = new PdfGeneration();
-        pdf.pdfGenerator("file name", "content");
     }
-    
+
     //<editor-fold defaultstate="collapsed" desc="setTableData">
     public void setTableData() {
         /* A nézet oszlopainak létrehozása
@@ -102,53 +110,50 @@ public class PBController implements Initializable {
         lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         lastNameCol.setCellValueFactory(new PropertyValueFactory<Person, String>("lastName"));
         editCommitEvent(lastNameCol, "LastName");
-        
+
         TableColumn firstNameCol = new TableColumn("FirstName");
         firstNameCol.setMinWidth(100);
         firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         firstNameCol.setCellValueFactory(new PropertyValueFactory<Person, String>("firstName"));
         editCommitEvent(firstNameCol, "FirstName");
-        
+
         TableColumn emailCol = new TableColumn("EmailAddress");
         emailCol.setMinWidth(200);
         emailCol.setCellFactory(TextFieldTableCell.forTableColumn());
         emailCol.setCellValueFactory(new PropertyValueFactory<Person, String>("email"));
         editCommitEvent(emailCol, "Email");
-        
+
         // Az oszlopok a táblára való felhelyezése
         table.getColumns().addAll(lastNameCol, firstNameCol, emailCol);
         table.setItems(data);
     }
-    
+
     private void editCommitEvent(TableColumn tableCol, String cellName) {
         // Esemény kezelő megvalósítása
         tableCol.setOnEditCommit(
-                new EventHandler<TableColumn.CellEditEvent<Person, String>> () {
-                    @Override
-                    public void handle(TableColumn.CellEditEvent<Person, String> t) {
-                        // Oszlop kiválasztó metódus hívása
-                        getCurrentColumn(t, cellName);
-                    }
-                });
+                new EventHandler<TableColumn.CellEditEvent<Person, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Person, String> t) {
+                // Oszlop kiválasztó metódus hívása
+                getCurrentColumn(t, cellName);
+            }
+        });
     }
-    
+
     private void getCurrentColumn(TableColumn.CellEditEvent<Person, String> t, String name) {
         // A megfelelő oszlop adott cellájának felülírása
         switch (name) {
             case "LastName":
                 ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        ).setLastName(t.getNewValue());
+                        t.getTablePosition().getRow())).setLastName(t.getNewValue());
                 break;
             case "FirstName":
                 ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        ).setFirstName(t.getNewValue());
+                        t.getTablePosition().getRow())).setFirstName(t.getNewValue());
                 break;
             case "Email":
                 ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())
-                        ).setEmail(t.getNewValue());
+                        t.getTablePosition().getRow())).setEmail(t.getNewValue());
                 break;
         }
     }
@@ -158,32 +163,32 @@ public class PBController implements Initializable {
         // Fő menü létrehozása
         TreeItem<String> treeItemRoot = new TreeItem<>("Menu");
         TreeView<String> treeView = new TreeView<>(treeItemRoot);
-        
+
         //A fő menü láthatóságának kikapcsolása
         treeView.setShowRoot(false);
-        
+
         // A főmenü alatti menük létrehozása (ezek már láthatóak)
         TreeItem<String> treeItemContacts = new TreeItem<>(MENU_CONTACTS);
         TreeItem<String> treeItemExit = new TreeItem<>(MENU_EXIT);
-        
+
         // Contacts menü alapértelmezett lenyitása
         treeItemContacts.setExpanded(true);
-        
+
         // Képek Node-kénti beimportálása
         Node contactNode = new ImageView(new Image(getClass().getResourceAsStream("contacts.png")));
         Node exportNode = new ImageView(new Image(getClass().getResourceAsStream("export.png")));
-        
+
         // Contacts menü almenüinek létrehozása és képek hozzáfűzése
         TreeItem<String> treeItemContactsList = new TreeItem<>(MENU_LIST, contactNode);
         TreeItem<String> treeItemContactsExports = new TreeItem<>(MENU_EXPORTS, exportNode);
-        
+
         // Menü részek összefűzése
         treeItemContacts.getChildren().addAll(treeItemContactsList, treeItemContactsExports);
         treeItemRoot.getChildren().addAll(treeItemContacts, treeItemExit);
-        
+
         // Menü rendszer felhelyezése a menuPane-re
         menuPane.getChildren().add(treeView);
-        
+
         // Egykattintásos legördítés megvalósítása
         treeView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
@@ -191,18 +196,18 @@ public class PBController implements Initializable {
                 TreeItem<String> selectedItem = (TreeItem<String>) newValue;
                 String selectedMenu = selectedItem.getValue();
                 if (selectedMenu != null) {
-                    switch(selectedMenu) {
+                    switch (selectedMenu) {
                         case MENU_CONTACTS:
                             try {
-                                treeItemContacts.setExpanded(true);
-                            } catch (Exception ex) {
-                            }
-                            break;
-                         case MENU_LIST:
+                            treeItemContacts.setExpanded(true);
+                        } catch (Exception ex) {
+                        }
+                        break;
+                        case MENU_LIST:
                             contactPane.setVisible(true);
                             exportPane.setVisible(false);
                             break;
-                         case MENU_EXPORTS:
+                        case MENU_EXPORTS:
                             contactPane.setVisible(false);
                             exportPane.setVisible(true);
                             break;
@@ -215,5 +220,4 @@ public class PBController implements Initializable {
         });
     }
 
-    
 }
