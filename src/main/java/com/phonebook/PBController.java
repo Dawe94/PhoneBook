@@ -32,6 +32,7 @@ public class PBController implements Initializable {
     private final String MENU_EXIT = "Exit";
     private final String MENU_LIST = "List";
     private final String MENU_EXPORTS = "Exports";
+    private final DB db = new DB();
 
 //<editor-fold defaultstate="collapsed" desc="FXML Objects">
     @FXML
@@ -57,17 +58,15 @@ public class PBController implements Initializable {
 //</editor-fold>
 
     // Adatbázis híján egy mesterséges Lista létrehozása
-    private final ObservableList<Person> data
-            = FXCollections.observableArrayList(
-                    new Person("Szabó", "Dávid", "szabod@citromail.com"),
-                    new Person("Kovács", "Éva", "kovacs_eva@freemail.hu"),
-                    new Person("Juhász", "Gábor", "jgabor1989@gmailmail.com"));
+    private final ObservableList<Person> data = FXCollections.observableArrayList();
 
     @FXML
     public void addContact(ActionEvent event) {
         String email = inputEmail.getText();
         if (isEmailAFormatValid(email)) {
-            data.add(new Person(inputLastName.getText(), inputFirstName.getText(), email));
+            Person person = new Person(inputLastName.getText(), inputFirstName.getText(), email);
+            data.add(person);
+            db.addContact(person);
             inputLastName.clear();
             inputFirstName.clear();
             inputEmail.clear();
@@ -95,7 +94,6 @@ public class PBController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DB db = new DB();
         setTableData();
         setMenuData();
     }
@@ -126,6 +124,8 @@ public class PBController implements Initializable {
 
         // Az oszlopok a táblára való felhelyezése
         table.getColumns().addAll(lastNameCol, firstNameCol, emailCol);
+        
+        data.addAll(db.getAllContacts());
         table.setItems(data);
     }
 
@@ -143,20 +143,19 @@ public class PBController implements Initializable {
 
     private void getCurrentColumn(TableColumn.CellEditEvent<Person, String> t, String name) {
         // A megfelelő oszlop adott cellájának felülírása
+        Person actualPerson = (Person)t.getTableView().getItems().get(t.getTablePosition().getRow());
         switch (name) {
-            case "LastName":
-                ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())).setLastName(t.getNewValue());
+            case "LastName":           
+                actualPerson.setLastName(t.getNewValue());
                 break;
             case "FirstName":
-                ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())).setFirstName(t.getNewValue());
+               actualPerson.setFirstName(t.getNewValue());
                 break;
             case "Email":
-                ((Person) t.getTableView().getItems().get(
-                        t.getTablePosition().getRow())).setEmail(t.getNewValue());
+                actualPerson.setEmail(t.getNewValue());
                 break;
         }
+        db.updateContact(actualPerson);
     }
 //</editor-fold>
 

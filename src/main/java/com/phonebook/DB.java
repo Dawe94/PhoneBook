@@ -25,9 +25,11 @@ public class DB {
         try {
             conn = DriverManager.getConnection(URL);
             statement = conn.createStatement();
+            dbmd = conn.getMetaData();
             ResultSet res = dbmd.getTables(null, "APP", "CONTACTS", null);
             if (!res.next()) {
-                statement.execute("create table contacts (lastname varchar(45), firstname varchar(45), email varchar(90))");
+                statement.execute("create table contacts (id INT not null primary key GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),"
+                        +"lastname varchar(45), firstname varchar(45), email varchar(90))");
             }
             System.out.println("Connected");
         } catch (SQLException ex) {
@@ -41,7 +43,7 @@ public class DB {
         try {
             ResultSet res = statement.executeQuery(sql);
             while (res.next()) {
-                list.add(new Person(res.getString("lastname"), res.getString("firstname"), res.getString("email")));
+                list.add(new Person(res.getInt("id"), res.getString("lastname"), res.getString("firstname"), res.getString("email")));
                 
             }
         } catch (SQLException ex) {
@@ -51,12 +53,12 @@ public class DB {
     }
     
     public void addContact(Person person) {
-        String sql = "insert into contacts values (?,?,?)";
+        String sql = "insert into contacts (lastname, firstname, email) values (?,?,?)";
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, person.getLastName());
             preparedStatement.setString(2, person.getFirstName());
-            preparedStatement.setString(1, person.getEmail());
+            preparedStatement.setString(3, person.getEmail());
             preparedStatement.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -64,12 +66,13 @@ public class DB {
     }
     
     public void updateContact(Person person) {
-        String sql = "update contacts set lastname = ?, firstname = ?, email = ? where ";
+        String sql = "update contacts set lastname = ?, firstname = ?, email = ? where id = ?";
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, person.getLastName());
             preparedStatement.setString(2, person.getFirstName());
-            preparedStatement.setString(1, person.getEmail());
+            preparedStatement.setString(3, person.getEmail());
+            preparedStatement.setInt(4, Integer.parseInt(person.getId()));
             preparedStatement.execute();
         } catch (SQLException ex) {
             ex.printStackTrace();
