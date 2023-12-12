@@ -12,8 +12,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,8 +26,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 public class PBController implements Initializable {
 
@@ -55,11 +60,40 @@ public class PBController implements Initializable {
     private Button exportButton;
     @FXML
     private TextField inputExport;
+    @FXML
+    private AnchorPane anchor;
+    @FXML
+    private SplitPane splitPane;
 //</editor-fold>
 
     // Adatbázis híján egy mesterséges Lista létrehozása
     private final ObservableList<Person> data = FXCollections.observableArrayList();
 
+    private void alert(String text) {
+        splitPane.setDisable(true);
+        splitPane.setOpacity(0.4);
+        
+        Label alertLabel = new Label(text);
+        Button alertButton = new Button("Ok");
+        alertButton.setMinWidth(60);
+        VBox vbox = new VBox(alertLabel, alertButton);
+        vbox.setSpacing(10d);
+        vbox.setAlignment(Pos.CENTER);
+        
+        alertButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                splitPane.setDisable(false);
+                splitPane.setOpacity(1d);
+                vbox.setVisible(false);
+            }
+        });
+        
+        anchor.getChildren().add(vbox);
+        anchor.setTopAnchor(vbox, 300d);
+        anchor.setLeftAnchor(vbox, 300d);
+    }
+    
     @FXML
     public void addContact(ActionEvent event) {
         String email = inputEmail.getText();
@@ -70,6 +104,8 @@ public class PBController implements Initializable {
             inputLastName.clear();
             inputFirstName.clear();
             inputEmail.clear();
+        } else {
+            alert("Invalid email address!");
         }
     }
 
@@ -81,6 +117,8 @@ public class PBController implements Initializable {
             PdfGeneration pdf = new PdfGeneration();
             pdf.pdfGenerator(fileName, data);
             inputExport.clear();
+        } else {
+            alert("Please enter the file name!");
         }
     }
 
