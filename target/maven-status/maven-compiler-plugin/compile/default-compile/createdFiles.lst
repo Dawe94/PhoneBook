@@ -3,7 +3,9 @@ com\phonebook\PBController$1.class
 com\phonebook\PhoneBook.class
 com\phonebook\PBController$2.class
 com\phonebook\PdfGeneration.class
+com\phonebook\PBController$4.class
 com\phonebook\PBController$3.class
 com\phonebook\DB.class
 module-info.class
 com\phonebook\Person.class
+com\phonebook\PBController$2$1.class

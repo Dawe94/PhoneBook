@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -30,6 +31,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 public class PBController implements Initializable {
 
@@ -143,25 +145,61 @@ public class PBController implements Initializable {
         * A Person osztályal való összefűzése
         * A felülírást megvalósító metódus hívása */
         TableColumn lastNameCol = new TableColumn("LastName");
-        lastNameCol.setMinWidth(100);
+        lastNameCol.setMinWidth(130);
         lastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         lastNameCol.setCellValueFactory(new PropertyValueFactory<Person, String>("lastName"));
         editCommitEvent(lastNameCol, "LastName");
 
         TableColumn firstNameCol = new TableColumn("FirstName");
-        firstNameCol.setMinWidth(100);
+        firstNameCol.setMinWidth(130);
         firstNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         firstNameCol.setCellValueFactory(new PropertyValueFactory<Person, String>("firstName"));
         editCommitEvent(firstNameCol, "FirstName");
 
         TableColumn emailCol = new TableColumn("EmailAddress");
-        emailCol.setMinWidth(200);
+        emailCol.setMinWidth(250);
         emailCol.setCellFactory(TextFieldTableCell.forTableColumn());
         emailCol.setCellValueFactory(new PropertyValueFactory<Person, String>("email"));
         editCommitEvent(emailCol, "Email");
+        
+        TableColumn removeCol = new TableColumn("Remove");
+        removeCol.setMinWidth(100);
+        
+        Callback<TableColumn<Person, String>, TableCell<Person, String>> cellFactory =
+                new Callback<TableColumn<Person, String>, TableCell<Person, String>>()
+                {
+                @Override
+                public TableCell call( final TableColumn<Person, String> param )
+                {
+                    final TableCell<Person, String> cell = new TableCell<>()
+                    { 
+                        final Button button = new Button("Remove");
+                        
+                        @Override
+                        public void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                                setText(null);
+                            } else {
+                                button.setOnAction((ActionEvent) -> {
+                                    Person person = getTableView().getItems().get( getIndex());
+                                    data.remove(person);
+                                    db.removeContact(person);
+                                });
+                                setGraphic(button);
+                                setText(null);
+                            }
+                        }
+                    };
+                    return cell;
+                }      
+            }; 
+        removeCol.setCellFactory(cellFactory);
+    
 
         // Az oszlopok a táblára való felhelyezése
-        table.getColumns().addAll(lastNameCol, firstNameCol, emailCol);
+        table.getColumns().addAll(lastNameCol, firstNameCol, emailCol, removeCol);
         
         data.addAll(db.getAllContacts());
         table.setItems(data);

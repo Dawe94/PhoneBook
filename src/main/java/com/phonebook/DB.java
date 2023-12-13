@@ -79,5 +79,16 @@ public class DB {
         }
     }
     
+    public void removeContact(Person person) {
+        String sql = "delete from contacts where id = ?";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setInt(1, Integer.parseInt(person.getId()));
+            preparedStatement.execute();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     
 }
